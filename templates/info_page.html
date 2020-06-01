@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AW Interview</title>
+    <link rel="stylesheet" href="/static/egreen.css">
+</head>
+<body>
+<h1>A look at anxiety and COVID-19</h1>
+<h2>What data we have</h2>
+<p>
+    I received some synthesised data from imaginary people who have been self-reporting about their experience
+    and response to the COVID-19 pandemic. Complementing this were some demographics for those people.
+
+    There are a total of 161,000 observations from 48,000 people. Most of the data is from 16 March - 4 May 2020
+    although there is some which goes back to mid 2019. There is a wide range of ages, geographies and both male
+    and female featured in the data.
+
+    Although users of the survey can submit their observations frequently over time, a relatively small number
+    have done so and indeed, 63% have only submitted one observation and only 7% have submitted more than 10.
+    This lack of individual temporality in the data does restrict somewhat the epidemiological analysis that can
+    be done.
+
+    Using the postcodes provided, some further geodemographic data was added and this was all sourced from the ONS.
+</p>
+<h2>Interesting or cool</h2>
+<p>
+    Normally, data is used to help reach a conclusive for some decision or solve a challenge. Under this context
+    the analyst would closely design their work around that and this helps to direct the work. This time though,
+    the task was to do something 'interesting or cool' with the data which is a task that rests finely on the
+    line between an analyst's best dream and worst nightmare!
+
+    Interest and coolness are quite subjective so I have used my judgement to pursue an investigation that I find
+    interesting and think others might do too. This investigation is to look at what might be related to people
+    feeling anxious about COVID-19.
+
+    Before we set about that though, it's sensible to have a look at what the data represents and whether it
+    is representative of a larger population like the UK.
+</p>
+<h2>A biased sample</h2>
+<p>
+    There are two variables in the data that can be very easily tested to see how representative the data may be
+    for the UK. These are age and sex.
+</p>
+<h3>We're missing some men</h3>
+<p>
+    According to the ONS, 49% of the UK is male. In our data this falls to 45% so we are slightly over-sampling
+    females. The point to really notice though is that although the male/female split for the UK is broadly
+    constant over different ages but tipping slightly towards females in old age, our data has quite a variable
+    balance and this is shown below.
+</p>
+<iframe id="mf" style="border:none;"  src="/male_female.html" height="700" width="100%"></iframe>
+<h3>There's a target group</h3>
+<p>
+    If we look at the difference between the distribution of ages in the UK and our survey users, it appears
+    that our survey has a target group of people that lies between the old the and young.
+    <br>
+    <br>
+    We can see this below. The green line shows the ages of survey users and the blue line is the UK. The
+    shaded areas show where one indexes above the other.
+</p>
+<img src="/static/users_ages.png">
+<h3>Urbanisation has reversed</h3>
+<p>
+    An important feature of a geographic population like the UK is how it is spatially distributed. The UK's
+    population distribution can be summarised as denser around major cities, higher in the South East and
+    anomolously high in Greater London. If our users were a sample that represented the UK, we'd expect to find
+    a similar thing however, it is quite clear from the map below that this is not the case.
+    <br> <br>
+    This map is of administrative areas and the darker the shade of green, the more survey users exist.
+</p>
+<iframe id="usermap" style="border:none;"  src="/user_map.html" height="700" width="100%"></iframe>
+<p>
+    We can further confirm this finding by looking at the proportion of the different areas' populations are
+    users of the survey and then plotting these figures. For a representative sample we would hope to see a
+    uniform distribution with equal proportions of people being survey users regardless of what area we were
+    dealing with. The distribution below is quite clearly not uniform, it is instead probably log normal.
+</p>
+<img src="/static/market_share_violin.png">
+<h2>Now what</h2>
+<p>
+    So we know now that we have a quite biased sample of people. We could resample our users to arrive at
+    something more alike the real world but we likely do not have the volume of data to do this. Correcting
+    the urban rural split in particular would be very risky.
+
+    I will proceed with the investigation using the available data but it is important to remember that it
+    is not clear from the data what factors led to this biased sample being created.
+</p>
+<h2>Anxiety is not an equal burden</h2>
+<p>
+    If anxiety were spread equally amongst our users, it would be statistically impossible to use just our
+    data to find what is related to anxiety. The below distribution shows us though that anxiety is unequally
+    distributed. This opens up the opportunity that some of the features within the data are related to or
+    even causing anxiety.
+</p>
+<iframe id="anxhist" style="border:none;"  src="/anxiety_hist.html" height="700" width="100%"></iframe>
+<p>
+    We can also the map below which shows the average feeling of anxiety for different administrative areas.
+    It shows that there is a patchy spread of anxiety around the country and there are some notable outliers
+    like East Anglia.
+</p>
+<iframe id="anxmap" style="border:none;"  src="/anx_map.html" height="700" width="100%"></iframe>
+<h2>Decision tree analysis</h2>
+<p>
+    A lot of the features in the data are categorical which leads me to propose using decision trees to
+    identify relationships in the data.
+
+    Using various approaches, decision tree analysis appears to have found a relationship between covid_symptoms
+    and anxiety. The next most important feature is being older than around 70. For those without symptoms,
+    being an older key worker is related to feelings of anxiety.
+
+    The first three layers of the tree are visualised below.
+</p>
+<img src="/static/first_dtree.png", width="1500">
+<h3>What else we can infer</h3>
+<p>
+    Although the tree above is useful, the scoring of its predictive power indicates that there are other
+    features at work that we have not captured in the model. Ideally we would set about capturing a much
+    wider array of features but this isn't possible at this time. Looking at the purple shaded anxiety map,
+    it appears there are some quite local variations in anxiety. One feature that would be interesting
+    to investigate is whether local levels of infection affect local levels of anxiety. There would certainly
+    be a reasonable hypothesis to say it should but on the other hand, with lockdown in force and much of
+    modern news reporting done with national or even international perspective, we could also hypothesise
+    that it would be the macro levels of infection that affect anxiety rather than local.
+    <br><br>
+    Joing our users' self-reporting of COVID-19 symptoms with population numbers from the ONS, we can re-run
+    the decision tree model and take account of local infection rates.
+    <br><br>
+    Following a re-run of the model, something surprising happens; not only is anxiety not related to high
+    levels of local infection, the relationship is actually the inverse! There could be various reasons for
+    this and more data would need to be considered before we could feel confident which reasons are correct.
+</p>
+<h2>Next steps</h2>
+<p>
+    This was a quick analysis of a very important topic. With more time, much more could be done. In particular
+    the following:
+    <br>
+     - increase the number of features <br>
+     - recruit more users and incentivise them to submit more frequently <br>
+     - further the analysis of local infection rates and use ONS as well as survey data
+
+</p>
+</body>
+</html>
